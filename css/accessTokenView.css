@@ -32,3 +32,10 @@ body {
 	border-bottom-right-radius: 4px;
 }
 
+.GetAccessTokenHelp {
+	margin-top: 20px;
+	padding: 20px;
+	background-color: rgba(0,0,0,0.1);
+	border-radius: 4px;
+}
+

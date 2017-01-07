@@ -17,6 +17,15 @@
 		<div class="AccessToken">
 			<input type="text" placeholder="Facebook access token.." id="AccessTokenInput">
 			<button type="button" class="btn btn-success" id="AccessTokenButton" onclick="facebook.init()">Go!</button>
+			<div class="GetAccessTokenHelp">
+				<p> You can obtain an access token <a href="https://developers.facebook.com/tools/explorer/" target="_blank"> here </a> . Make sure you enable the following permissions : </p>
+				<ol>
+					<li> email </li>
+					<li> user_about_me </li>
+					<li> user_friends </li>
+					<li> user_posts </li>
+				</ol> 
+			</div>
 		</div>
 		<script type="text/javascript" src="js/facebook.js"></script>
 	</body>
