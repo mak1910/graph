@@ -1,0 +1,17 @@
+{
+  "name": "graph",
+  "homepage": "https://github.com/mak1910/graph",
+  "authors": [
+    "Mridul Kothari <mak1910@outlook.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
