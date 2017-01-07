@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <meta name="author" content="mridul">
         <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/accessTokenView.css">
 
 		<script type="text/javascript" src="assets/jquery/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
@@ -13,7 +14,10 @@
 		<script type="text/javascript" src="assets/async/async.min.js"></script>
 	</head>
 	<body>
-
-		<script type="text/javascript" src="js/main.js"></script>
+		<div class="AccessToken">
+			<input type="text" placeholder="Facebook access token.." id="AccessTokenInput">
+			<button type="button" class="btn btn-success" id="AccessTokenButton" onclick="facebook.init()">Go!</button>
+		</div>
+		<script type="text/javascript" src="js/facebook.js"></script>
 	</body>
 </html>
