@@ -17,6 +17,12 @@ facebook.init = function() {
                 globalData.posts = posts;
                 cb();
             });
+        },
+        function(cb) {
+            self.getAllPostLikes(accessToken, globalData.posts, function(posts) {
+                globalData.posts = posts;
+                cb();
+            });
         }
     ], function(err) {
         console.log(globalData);
@@ -51,26 +57,46 @@ facebook.nextHandeler = function (url, cb) {
     });
 }
 
-facebook.getLikes = function (accessToken, postId, cb) {
-    var url = "https://graph.facebook.com/v2.8/" + postId + "/likes?access_token=" + accessToken;
-    nextHandeler(url, cb);
+facebook.getLikes = function (accessToken, posts, cb) {
+    var self  = this;
+    var tasks = [];
+
+    _.each(posts, function(post) {
+        var task = (function(post) {
+            return function(callback) {
+                var url = "https://graph.facebook.com/v2.8/" + post.id + "/likes?access_token=" + accessToken;
+                self.nextHandeler(url, function(likes) {
+                    post.likes = likes;
+                    callback(null, post);
+                })
+            }
+        })(post);
+        tasks.push(task);
+    });
+
+    async.parallel(tasks, cb);
 }
 
-facebook.getAllPostLikes = function (accessToken, posts, cb) {
+facebook.getAllPostLikes = function(accessToken, posts, cb) {
+    var self  = this;
+    var maxP  = 50;
     var tasks = [];
-    _.each(posts, function(post) {
-        if(post && post.id) {
-            var task = (function(post) {
-                return function(callback) {
-                    getLikes(accessToken, post.id, function(data) {
-                        callback(null, data);
-                    });
-                }
-            })(post);
-            tasks.push(task);
-        }
+
+    for(var i=0; i<posts.length; i+=maxP) {
+        var subArray = posts.slice(i, i+maxP);
+        var task = (function(posts) {
+            return function(callback) {
+                self.getLikes(accessToken, posts, callback);
+            }
+        })(subArray);
+        tasks.push(task);
+    }
+
+    async.series(tasks, function(err, postData) {
+        var postsNew = [];
+        _.each(postData, function(posts) {
+            postsNew = postsNew.concat(posts);
+        })
+        cb(postsNew);
     });
-    async.parallel(tasks, function(err, likes) {
-        cb(likes);
-    })
 }
