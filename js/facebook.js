@@ -2,14 +2,24 @@ var globalData  = {};
 var facebook    = {};
 
 facebook.init = function() {
-    var self = this;
-    globalData.accessToken = document.getElementById('AccessTokenInput').value;
+    var self    = this;
+    accessToken = document.getElementById('AccessTokenInput').value;
+    
     async.waterfall([
         function(cb) {
-            
+            self.getProfile(accessToken, function(profile) {
+                globalData.profile = profile;
+                cb();
+            });
+        },
+        function(cb) {
+            self.getPosts(accessToken, globalData.profile.id, function(posts) {
+                globalData.posts = posts;
+                cb();
+            });
         }
     ], function(err) {
-
+        console.log(globalData);
     })
 }
 
@@ -20,10 +30,17 @@ facebook.getProfile = function (accessToken, cb) {
     });
 }
 
+facebook.getPosts = function (accessToken, userId, cb) {
+    var self = this;
+    var url  = "https://graph.facebook.com/v2.8/" + userId + '/posts?access_token=' + accessToken;
+    self.nextHandeler(url, cb);
+}
+
 facebook.nextHandeler = function (url, cb) {
+    var self = this;
     $.get(url, function(result) {
         if(result && result.paging && result.paging.next && result.data.length != 0) {
-            nextHandeler(result.paging.next, function(data) {
+            self.nextHandeler(result.paging.next, function(data) {
                 cb(result.data.concat(data));
             });
         } else {
@@ -32,11 +49,6 @@ facebook.nextHandeler = function (url, cb) {
     }).fail(function() {
         cb([]);
     });
-}
-
-facebook.getPosts = function (accessToken, userId, cb) {
-    var url = "https://graph.facebook.com/v2.8/" + userId + '/posts?access_token=' + accessToken;
-    nextHandeler(url, cb);
 }
 
 facebook.getLikes = function (accessToken, postId, cb) {
