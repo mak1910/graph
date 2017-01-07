@@ -1,0 +1,17 @@
+{
+  "name": "graph",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Mridul Kothari <mak1910@outlook.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/mak1910/graph",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
