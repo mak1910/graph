@@ -12,6 +12,8 @@
 		<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="assets/underscore/underscore.min.js"></script>
 		<script type="text/javascript" src="assets/async/async.min.js"></script>
+		<script type="text/javascript" src="assets/fileSaver/FileSaver.min.js"></script>
+		<script type="text/javascript" src="assets/chart/Chart.bundle.min.js"></script>
 	</head>
 	<body>
 		<div class="AccessToken">
@@ -27,6 +29,19 @@
 				</ol> 
 			</div>
 		</div>
+		<div class="Graphs container-fluid">
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+					<div class="PostsByMonth" style="width:100%; height: 400px;">
+						<canvas id="PostsByMonth" width="40" height="10"></canvas>
+					</div>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+		</div>
 		<script type="text/javascript" src="js/facebook.js"></script>
+		<script type="text/javascript" src="js/temporaryDataFetch.js"></script>
+		<script type="text/javascript" src="js/data.js"></script>
 	</body>
 </html>

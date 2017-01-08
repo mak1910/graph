@@ -25,7 +25,8 @@ facebook.init = function() {
             });
         }
     ], function(err) {
-        console.log(globalData);
+        var blob = new Blob([JSON.stringify(globalData)], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "globalData.txt");
     })
 }
 
