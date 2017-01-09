@@ -6,18 +6,20 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <meta name="author" content="mridul">
         <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="assets/animate/animate.css">
         <link rel="stylesheet" type="text/css" href="css/accessTokenView.css">
+        <link rel="stylesheet" type="text/css" href="css/graphsView.css">
 
-		<script type="text/javascript" src="assets/jquery/jquery-3.1.1.min.js"></script>
-		<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="assets/underscore/underscore.min.js"></script>
 		<script type="text/javascript" src="assets/async/async.min.js"></script>
-		<script type="text/javascript" src="assets/fileSaver/FileSaver.min.js"></script>
 		<script type="text/javascript" src="assets/chart/Chart.bundle.min.js"></script>
+		<script type="text/javascript" src="assets/fileSaver/FileSaver.min.js"></script>
+		<script type="text/javascript" src="assets/jquery/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="assets/underscore/underscore.min.js"></script>
+		<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<div class="AccessToken">
-			<input type="text" placeholder="Facebook access token.." id="AccessTokenInput">
+			<input type="text" placeholder="Facebook access token.." id="AccessTokenInput" />
 			<button type="button" class="btn btn-success" id="AccessTokenButton" onclick="facebook.init()">Go!</button>
 			<div class="GetAccessTokenHelp">
 				<p> You can obtain an access token <a href="https://developers.facebook.com/tools/explorer/" target="_blank"> here </a> . Make sure you enable the following permissions : </p>
@@ -41,7 +43,5 @@
 			</div>
 		</div>
 		<script type="text/javascript" src="js/facebook.js"></script>
-		<script type="text/javascript" src="js/temporaryDataFetch.js"></script>
-		<script type="text/javascript" src="js/data.js"></script>
 	</body>
 </html>
