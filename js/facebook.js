@@ -70,11 +70,32 @@ function fetchFacebookData() {
         });
     };
 
-    var startAnimation = function() {
-        $('#AccessTokenInput').css({ width: '450px', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }).val('').attr('placeholder', '');
-        $('#AccessTokenButton').css({ borderTopRightRadius: '0px', borderBottomRightRadius: '0px', height: '36px' }).html('').animate({ right: '400px' }, 500, function() {
-            console.log('Done');
-        });
+    var startAnimation = function(cb) {
+        $('#AccessTokenInput')
+            .css({ width: '450px', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' })
+            .val('')
+            .attr('placeholder', '');
+        $('#AccessTokenButton')
+            .css({ borderTopRightRadius: '0px', borderBottomRightRadius: '0px', height: '36px' })
+            .html('')
+            .animate({ right: '400px' }, 500, function() {
+                cb();
+            });
+    };
+
+    var animationStatus = 'Fetching profile information';
+
+    var continueAnimation = function() {
+        console.log('1');
+        $('.LoadingStatus')
+            .show()
+            .html(animationStatus)
+            .textillate().on('outAnimationEnd.tlt', function() {
+                continueAnimation();
+            });
+            setTimeout(function() {
+                animationStatus = 'Doing something else';
+            }, 10)
     };
     
     // Initialize and fetch facebook info
@@ -105,7 +126,39 @@ function fetchFacebookData() {
         });
     };
 
-    startAnimation();
+     var textillateOptionsLoading = {
+                selector: '.texts',
+                loop: false,
+                minDisplayTime: 200,
+                initialDelay: 0,
+                autoStart: true,
+                inEffects: [],
+                outEffects: [],
+                in: {
+                    effect: 'flash',
+                    delayScale: 1,
+                    delay: 10,
+                    sync: false,
+                    shuffle: false,
+                    reverse: false,
+                    callback: function () {}
+                },
+                out: {
+                    effect: 'flash',
+                    delayScale: 1,
+                    delay: 10,
+                    sync: false,
+                    shuffle: false,
+                    reverse: false,
+                    callback: function () {}
+                },
+                callback: function () {
+                    continueAnimation();
+                },
+                type: 'char'
+            }
+
+    startAnimation(continueAnimation);
 }
 
 setTimeout(function() {

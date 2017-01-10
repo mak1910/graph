@@ -38,3 +38,8 @@ body {
 	background-color: rgba(0,0,0,0.1);
 	border-radius: 4px;
 }
+
+.LoadingStatus {
+	margin-top: 20px;
+	display: none;
+}
