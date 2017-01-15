@@ -37,7 +37,7 @@ function fetchFacebookData() {
             var task = (function(post) {
                 return function(callback) {
                     var url = "https://graph.facebook.com/v2.8/" + post.id + "/likes?access_token=" + accessToken;
-                    self.nextHandeler(url, function(likes) {
+                    nextHandeler(url, function(likes) {
                         post.likes = likes;
                         callback(null, post);
                     })
@@ -49,16 +49,17 @@ function fetchFacebookData() {
     };
     
     // Get all likes in series
-    var getAllPostLikes = function(accessToken, posts, cb) {
+    var getAllPostLikes = function(accessToken, posts, animationUpdate, cb) {
         var maxP  = 20; // Maximum number of get requests in parallel
         var tasks = [];
         for(var i=0; i<posts.length; i+=maxP) {
             var subArray = posts.slice(i, i+maxP);
-            var task = (function(posts) {
+            var task = (function(posts, i) {
                 return function(callback) {
-                    self.getLikes(accessToken, posts, callback);
+                    animationUpdate((50 + i/posts.length)/100);
+                    getLikes(accessToken, posts, callback);
                 }
-            })(subArray);
+            })(subArray, i);
             tasks.push(task);
         }
         async.series(tasks, function(err, postData) {
@@ -70,7 +71,16 @@ function fetchFacebookData() {
         });
     };
 
-    var startAnimation = function(cb) {
+    var Animation = function(cb) {
+        var self = this;
+        self.startInitialAnimation();
+        self.animationStatus = 'Fetching profile information';
+        self.repeatAnimation = setInterval(function() {
+            $('.LoadingStatus').show().html(self.animationStatus);
+        }, 100);
+    };
+
+    Animation.prototype.startInitialAnimation = function() {
         $('#AccessTokenInput')
             .css({ width: '450px', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' })
             .val('')
@@ -78,92 +88,58 @@ function fetchFacebookData() {
         $('#AccessTokenButton')
             .css({ borderTopRightRadius: '0px', borderBottomRightRadius: '0px', height: '36px' })
             .html('')
-            .animate({ right: '400px' }, 500, function() {
-                cb();
-            });
+            .animate({ right: '400px' }, 500);
     };
 
-    var animationStatus = 'Fetching profile information';
+    Animation.prototype.updateProgress = function(percent) {
+        var width = percent*450>50 ? percent*450 : 50;
+        var right = (450-width) + 'px';
+        $('#AccessTokenButton').animate({ width: width, right: right }, 500);
+    };
 
-    var continueAnimation = function() {
-        console.log('1');
-        $('.LoadingStatus')
-            .show()
-            .html(animationStatus)
-            .textillate().on('outAnimationEnd.tlt', function() {
-                continueAnimation();
-            });
-            setTimeout(function() {
-                animationStatus = 'Doing something else';
-            }, 10)
+    Animation.prototype.updateStatus = function(str) {
+        this.animationStatus = str;
+    };
+
+    Animation.prototype.end = function() {
+        clearInterval(this.repeatAnimation);
+         $('.LoadingStatus').hide()
     };
     
     // Initialize and fetch facebook info
-    var init = function() {
+    (function init() {
         var accessToken = document.getElementById('AccessTokenInput').value;
+        var animation   = new Animation();
         async.waterfall([
             function(cb) {
-                self.getProfile(accessToken, function(profile) {
+                animation.updateStatus('Fetching public profile..');
+                getProfile(accessToken, function(profile) {
+                    animation.updateProgress(20/100);
                     globalData.profile = profile;
                     cb();
                 });
             },
             function(cb) {
-                self.getPosts(accessToken, globalData.profile.id, function(posts) {
+                animation.updateStatus('Fetching all posts..');
+                getPosts(accessToken, globalData.profile.id, function(posts) {
+                    animation.updateProgress(50/100);
                     globalData.posts = posts;
                     cb();
                 });
             },
             function(cb) {
-                self.getAllPostLikes(accessToken, globalData.posts, function(posts) {
+                animation.updateStatus('Fetching post likes..');
+                getAllPostLikes(accessToken, globalData.posts, animation.updateProgress, function(posts) {
                     globalData.posts = posts;
                     cb();
                 });
             }
         ], function(err) {
+            animation.updateProgress(100/100);
+            animation.end();
             var blob = new Blob([JSON.stringify(globalData)], {type: "text/plain;charset=utf-8"});
             saveAs(blob, "globalData.txt");
         });
-    };
+    })();
 
-     var textillateOptionsLoading = {
-                selector: '.texts',
-                loop: false,
-                minDisplayTime: 200,
-                initialDelay: 0,
-                autoStart: true,
-                inEffects: [],
-                outEffects: [],
-                in: {
-                    effect: 'flash',
-                    delayScale: 1,
-                    delay: 10,
-                    sync: false,
-                    shuffle: false,
-                    reverse: false,
-                    callback: function () {}
-                },
-                out: {
-                    effect: 'flash',
-                    delayScale: 1,
-                    delay: 10,
-                    sync: false,
-                    shuffle: false,
-                    reverse: false,
-                    callback: function () {}
-                },
-                callback: function () {
-                    continueAnimation();
-                },
-                type: 'char'
-            }
-
-    startAnimation(continueAnimation);
 }
-
-setTimeout(function() {
-    fetchFacebookData();
-}, 5000);
-
-
-
